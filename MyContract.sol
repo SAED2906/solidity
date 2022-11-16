@@ -19,16 +19,36 @@ contract myContract{
     enum State { Waiting, Ready, Active}
     State public state;
 
+    address owner;
+
+    modifier onlyOwner(){//msg - function meta data
+        require(msg.sender == owner); //data implied
+        _;
+    }
+
+    constructor() public {
+        state = State.Waiting;
+        value = "myValue";
+        owner = msg.sender;
+    }
+
     struct Person{
         uint _id;
         string _firstName;
         string _lastName;
     }
 
-    function addPerson(string memory _firstName, string memory _lastName) public {
+
+    function addPerson(//Params
+        string memory _firstName, 
+        string memory _lastName
+    ) //Motifiers
+    public 
+    onlyOwner
+    {//Code
         //people.push(Person(_firstName, _lastName)); put in mapping not array
-        peopleCount += 1;
-        people[peopleCount] = Person(_firstName, _lastName);
+        CountInc();
+        people[peopleCount] = Person(peopleCount, _firstName, _lastName);
         
     }
 
@@ -39,10 +59,7 @@ contract myContract{
     
 
 
-    constructor() public {
-        state = State.Waiting;
-        value = "myValue";
-    }
+ 
 
     function activate() public {
         state = State.Active;
